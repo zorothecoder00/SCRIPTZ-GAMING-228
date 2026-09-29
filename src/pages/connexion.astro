@@ -1,0 +1,36 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AuthCard from '../components/AuthCard.astro';
+---
+
+<Layout title="Connexion · Scriptz Gaming 228">
+  <AuthCard title="Connexion" subtitle="Content de te revoir, gamer.">
+    <form id="signin-form" class="space-y-5">
+      <label class="block">
+        <span class="text-sm font-semibold uppercase tracking-wider text-zinc-400">E-mail</span>
+        <input name="email" type="email" required autocomplete="email" class="field" />
+      </label>
+      <label class="block">
+        <span class="text-sm font-semibold uppercase tracking-wider text-zinc-400">Mot de passe</span>
+        <input name="password" type="password" required autocomplete="current-password" class="field" />
+      </label>
+      <p id="form-error" class="hidden rounded-md bg-neon-pink/10 px-4 py-2 text-neon-pink" role="alert"></p>
+      <button type="submit" class="btn-primary w-full">Se connecter</button>
+    </form>
+    <p class="mt-6 text-center text-zinc-400">
+      Pas encore de compte ? <a href="/inscription" class="font-semibold text-neon-green hover:underline">S'inscrire</a>
+    </p>
+  </AuthCard>
+</Layout>
+
+<script>
+  import { authClient } from '../lib/auth-client';
+  import { handleAuthForm } from '../lib/auth-form';
+
+  handleAuthForm('signin-form', (data) =>
+    authClient.signIn.email({
+      email: String(data.get('email')),
+      password: String(data.get('password')),
+    }),
+  );
+</script>

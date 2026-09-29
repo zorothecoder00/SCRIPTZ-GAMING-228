@@ -11,10 +11,12 @@ const {
   description = 'Scriptz Gaming 228 — la communauté gaming du Togo : tournois, streams et esport.',
 } = Astro.props;
 
+const { user } = Astro.locals;
+
 const links = [
-  { href: '#jeux', label: 'Jeux' },
-  { href: '#tournois', label: 'Tournois' },
-  { href: '#communaute', label: 'Communauté' },
+  { href: '/#jeux', label: 'Jeux' },
+  { href: '/#tournois', label: 'Tournois' },
+  { href: '/#communaute', label: 'Communauté' },
 ];
 ---
 
@@ -47,12 +49,25 @@ const links = [
             <li><a href={l.href} class="transition hover:text-neon-green">{l.label}</a></li>
           ))}
         </ul>
-        <a
-          href="#rejoindre"
-          class="rounded-md border border-neon-green px-4 py-2 text-sm font-bold uppercase tracking-wider text-neon-green transition hover:bg-neon-green hover:text-night-950"
-        >
-          Rejoindre
-        </a>
+        {user ? (
+          <a
+            href="/compte"
+            class="flex items-center gap-2 rounded-md border border-white/10 px-3 py-2 text-sm font-bold text-white transition hover:border-neon-green hover:text-neon-green"
+          >
+            <span class="grid h-6 w-6 place-items-center rounded-full bg-neon-purple text-xs text-white">{user.name.charAt(0).toUpperCase()}</span>
+            <span class="max-w-32 truncate">{user.name}</span>
+          </a>
+        ) : (
+          <div class="flex items-center gap-4">
+            <a href="/connexion" class="hidden text-sm font-bold uppercase tracking-wider transition hover:text-neon-green sm:block">Connexion</a>
+            <a
+              href="/inscription"
+              class="rounded-md border border-neon-green px-4 py-2 text-sm font-bold uppercase tracking-wider text-neon-green transition hover:bg-neon-green hover:text-night-950"
+            >
+              Rejoindre
+            </a>
+          </div>
+        )}
       </nav>
     </header>
 

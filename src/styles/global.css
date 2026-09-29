@@ -40,3 +40,12 @@
 @utility glow-green {
   box-shadow: 0 0 24px rgb(57 255 136 / 0.35);
 }
+
+@utility field {
+  @apply mt-2 block w-full rounded-md border border-white/10 bg-night-800 px-4 py-2.5 text-white outline-none transition placeholder:text-zinc-600 focus:border-neon-green focus:ring-2 focus:ring-neon-green/30;
+}
+
+@utility btn-primary {
+  @apply rounded-md bg-neon-green px-8 py-3 font-bold uppercase tracking-wider text-night-950 transition hover:brightness-110 disabled:cursor-wait disabled:opacity-60;
+  box-shadow: 0 0 24px rgb(57 255 136 / 0.35);
+}

@@ -9,14 +9,23 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "db:migrate": "node --experimental-strip-types --no-warnings --env-file=.env scripts/migrate-auth.ts",
+    "db:migrate:prod": "node --experimental-strip-types --no-warnings --env-file=.env.prod.bak scripts/migrate-auth.ts"
   },
   "dependencies": {
+    "@astrojs/vercel": "^11.0.11",
     "@tailwindcss/vite": "^4.3.3",
+    "@vercel/functions": "^3.9.9",
     "astro": "^7.3.5",
+    "better-auth": "^1.7.6",
+    "pg": "^8.23.0",
     "tailwindcss": "^4.3.3"
   },
   "allowScripts": {
     "esbuild": true
+  },
+  "devDependencies": {
+    "@types/pg": "^8.23.1"
   }
 }

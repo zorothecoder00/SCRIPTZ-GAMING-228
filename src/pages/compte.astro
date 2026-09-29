@@ -1,0 +1,40 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Le middleware redirige vers /connexion si personne n'est connecté.
+const user = Astro.locals.user!;
+const memberSince = new Date(user.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<Layout title="Mon compte · Scriptz Gaming 228">
+  <section class="mx-auto max-w-3xl px-4 py-20">
+    <p class="text-sm font-semibold uppercase tracking-widest text-neon-green">Espace membre</p>
+    <h1 class="mt-2 font-display text-3xl font-extrabold text-white md:text-4xl">
+      Salut, <span class="text-gradient">{user.name}</span> 🎮
+    </h1>
+
+    <div class="mt-10 grid gap-4 sm:grid-cols-2">
+      <div class="rounded-xl border border-white/5 bg-night-800 p-6">
+        <p class="text-sm uppercase tracking-wider text-zinc-500">E-mail</p>
+        <p class="mt-1 break-all text-white">{user.email}</p>
+      </div>
+      <div class="rounded-xl border border-white/5 bg-night-800 p-6">
+        <p class="text-sm uppercase tracking-wider text-zinc-500">Membre depuis</p>
+        <p class="mt-1 text-white">{memberSince}</p>
+      </div>
+    </div>
+
+    <button id="signout" class="mt-10 rounded-md border border-neon-pink/60 px-6 py-2 font-bold uppercase tracking-wider text-neon-pink transition hover:bg-neon-pink hover:text-night-950">
+      Se déconnecter
+    </button>
+  </section>
+</Layout>
+
+<script>
+  import { authClient } from '../lib/auth-client';
+
+  document.getElementById('signout')?.addEventListener('click', async () => {
+    await authClient.signOut();
+    location.href = '/';
+  });
+</script>
