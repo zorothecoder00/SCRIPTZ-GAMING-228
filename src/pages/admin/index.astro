@@ -1,0 +1,44 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { resources } from '../../lib/admin-resources';
+import { query } from '../../lib/db';
+
+const counts = await Promise.all(
+  Object.entries(resources).map(async ([key, r]) => {
+    const { rows } = await query<{ n: number }>(`SELECT count(*)::int AS n FROM ${r.table}`);
+    return { key, ...r, count: rows[0].n };
+  }),
+);
+
+const { rows: lastMessages } = await query<{ id: number; name: string; subject: string | null; created_at: Date }>(
+  'SELECT id, name, subject, created_at FROM contact_messages ORDER BY created_at DESC LIMIT 5',
+);
+---
+
+<AdminLayout title={`Salut, ${Astro.locals.user!.name} 👋`}>
+  <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+    {counts.map((c) => (
+      <a href={`/admin/${c.key}`} class="rounded-xl border border-white/5 bg-night-800 p-5 transition hover:border-neon-green/50">
+        <p class="text-2xl">{c.icon}</p>
+        <p class="mt-3 font-display text-3xl font-extrabold text-white">{c.count}</p>
+        <p class="text-sm font-semibold uppercase tracking-wider text-zinc-500">{c.label}</p>
+      </a>
+    ))}
+  </div>
+
+  <h2 class="mt-12 font-display text-xl font-bold text-white">Derniers messages</h2>
+  {lastMessages.length ? (
+    <ul class="mt-4 divide-y divide-white/5 rounded-xl border border-white/5 bg-night-800">
+      {lastMessages.map((m) => (
+        <li>
+          <a href={`/admin/messages/${m.id}`} class="flex flex-wrap justify-between gap-2 px-5 py-3 hover:bg-white/5">
+            <span class="text-white">{m.name} <span class="text-zinc-500">· {m.subject ?? 'Sans sujet'}</span></span>
+            <span class="text-sm text-zinc-500">{m.created_at.toLocaleDateString('fr-FR')}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p class="mt-4 text-zinc-500">Aucun message pour le moment.</p>
+  )}
+</AdminLayout>

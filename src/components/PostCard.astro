@@ -1,0 +1,21 @@
+---
+import { formatDate, type Post } from '../lib/content';
+
+interface Props {
+  post: Post;
+}
+const { post } = Astro.props;
+---
+
+<a href={`/actualites/${post.slug}`} class="group flex flex-col overflow-hidden rounded-xl border border-white/5 bg-night-800 transition hover:-translate-y-1 hover:border-neon-pink/50">
+  <div class="aspect-video overflow-hidden bg-gradient-to-br from-neon-pink/20 via-night-900 to-neon-purple/20">
+    {post.cover_url && (
+      <img src={post.cover_url} alt="" loading="lazy" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+    )}
+  </div>
+  <div class="flex flex-1 flex-col p-5">
+    <time class="text-sm font-semibold uppercase tracking-wider text-neon-pink">{formatDate(post.published_at)}</time>
+    <h3 class="mt-2 font-display text-lg font-bold leading-snug text-white group-hover:text-neon-green">{post.title}</h3>
+    {post.excerpt && <p class="mt-2 line-clamp-3 text-base text-zinc-400">{post.excerpt}</p>}
+  </div>
+</a>

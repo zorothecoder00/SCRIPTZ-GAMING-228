@@ -2,9 +2,6 @@ type AuthResult = { error: { message?: string; code?: string } | null };
 
 const MESSAGES: Record<string, string> = {
   INVALID_EMAIL_OR_PASSWORD: 'E-mail ou mot de passe incorrect.',
-  USER_ALREADY_EXISTS: 'Un compte existe déjà avec cet e-mail.',
-  USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL: 'Un compte existe déjà avec cet e-mail.',
-  PASSWORD_TOO_SHORT: 'Mot de passe trop court (8 caractères minimum).',
   INVALID_EMAIL: 'Adresse e-mail invalide.',
 };
 
@@ -27,7 +24,7 @@ export function handleAuthForm(formId: string, submit: (data: FormData) => Promi
         return;
       }
       const redirect = new URLSearchParams(location.search).get('redirect');
-      location.href = redirect?.startsWith('/') && !redirect.startsWith('//') ? redirect : '/compte';
+      location.href = redirect?.startsWith('/') && !redirect.startsWith('//') ? redirect : '/admin';
     } catch {
       errorBox.textContent = 'Impossible de joindre le serveur. Réessaie.';
       errorBox.classList.remove('hidden');

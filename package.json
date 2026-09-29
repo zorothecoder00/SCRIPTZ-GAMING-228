@@ -10,8 +10,10 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "db:migrate": "node --experimental-strip-types --no-warnings --env-file=.env scripts/migrate-auth.ts",
-    "db:migrate:prod": "node --experimental-strip-types --no-warnings --env-file=.env.prod.bak scripts/migrate-auth.ts"
+    "db:migrate": "node --experimental-strip-types --no-warnings --env-file=.env scripts/migrate.ts",
+    "db:migrate:prod": "node --experimental-strip-types --no-warnings --env-file=.env.prod.bak scripts/migrate.ts",
+    "admin:create": "node --experimental-strip-types --no-warnings --env-file=.env scripts/create-admin.ts",
+    "admin:create:prod": "node --experimental-strip-types --no-warnings --env-file=.env.prod.bak scripts/create-admin.ts"
   },
   "dependencies": {
     "@astrojs/vercel": "^11.0.11",

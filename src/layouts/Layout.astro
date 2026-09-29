@@ -1,23 +1,26 @@
 ---
 import '../styles/global.css';
+import { site, socialLabels, type SocialKey } from '../data/site';
 
 interface Props {
   title?: string;
   description?: string;
+  image?: string | null;
 }
 
-const {
-  title = 'Scriptz Gaming 228',
-  description = 'Scriptz Gaming 228 — la communauté gaming du Togo : tournois, streams et esport.',
-} = Astro.props;
-
-const { user } = Astro.locals;
+const { title, description = site.description, image } = Astro.props;
+const fullTitle = title ? `${title} · ${site.name}` : `${site.name} — ${site.tagline}`;
 
 const links = [
-  { href: '/#jeux', label: 'Jeux' },
-  { href: '/#tournois', label: 'Tournois' },
-  { href: '/#communaute', label: 'Communauté' },
+  { href: '/equipe', label: 'Équipe' },
+  { href: '/palmares', label: 'Palmarès' },
+  { href: '/actualites', label: 'Actualités' },
+  { href: '/contact', label: 'Contact' },
 ];
+const current = Astro.url.pathname;
+const isActive = (href: string) => current === href || current.startsWith(`${href}/`);
+
+const socials = (Object.entries(site.socials) as [SocialKey, string][]).filter(([, url]) => url);
 ---
 
 <!doctype html>
@@ -27,6 +30,10 @@ const links = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#07070c" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    {image && <meta property="og:image" content={image} />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -36,48 +43,74 @@ const links = [
       rel="stylesheet"
     />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
+    <title>{fullTitle}</title>
   </head>
-  <body>
+  <body class="flex min-h-screen flex-col">
     <header class="sticky top-0 z-50 border-b border-white/5 bg-night-950/80 backdrop-blur">
       <nav class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
         <a href="/" class="font-display text-lg font-extrabold tracking-wider text-white">
-          SCRIPTZ<span class="text-neon-green">228</span>
+          {site.shortName}<span class="text-neon-green">{site.tag}</span>
         </a>
+
         <ul class="hidden gap-8 text-sm font-semibold uppercase tracking-widest md:flex">
           {links.map((l) => (
-            <li><a href={l.href} class="transition hover:text-neon-green">{l.label}</a></li>
+            <li>
+              <a href={l.href} class:list={['transition hover:text-neon-green', isActive(l.href) && 'text-neon-green']}>{l.label}</a>
+            </li>
           ))}
         </ul>
-        {user ? (
-          <a
-            href="/compte"
-            class="flex items-center gap-2 rounded-md border border-white/10 px-3 py-2 text-sm font-bold text-white transition hover:border-neon-green hover:text-neon-green"
-          >
-            <span class="grid h-6 w-6 place-items-center rounded-full bg-neon-purple text-xs text-white">{user.name.charAt(0).toUpperCase()}</span>
-            <span class="max-w-32 truncate">{user.name}</span>
-          </a>
-        ) : (
-          <div class="flex items-center gap-4">
-            <a href="/connexion" class="hidden text-sm font-bold uppercase tracking-wider transition hover:text-neon-green sm:block">Connexion</a>
-            <a
-              href="/inscription"
-              class="rounded-md border border-neon-green px-4 py-2 text-sm font-bold uppercase tracking-wider text-neon-green transition hover:bg-neon-green hover:text-night-950"
-            >
-              Rejoindre
-            </a>
-          </div>
-        )}
+
+        <a href="/contact" class="hidden rounded-md border border-neon-green px-4 py-2 text-sm font-bold uppercase tracking-wider text-neon-green transition hover:bg-neon-green hover:text-night-950 md:block">
+          Nous contacter
+        </a>
+
+        <!-- Menu mobile -->
+        <details class="group relative md:hidden">
+          <summary class="cursor-pointer list-none rounded-md border border-white/10 px-3 py-2 text-sm font-bold uppercase tracking-wider text-white [&::-webkit-details-marker]:hidden">
+            <span class="group-open:hidden">Menu</span><span class="hidden group-open:inline">Fermer</span>
+          </summary>
+          <ul class="absolute right-0 mt-3 w-56 space-y-1 rounded-xl border border-white/10 bg-night-900 p-3 shadow-2xl">
+            {links.map((l) => (
+              <li>
+                <a href={l.href} class:list={['block rounded-md px-3 py-2 font-semibold uppercase tracking-wider hover:bg-white/5', isActive(l.href) ? 'text-neon-green' : 'text-zinc-200']}>{l.label}</a>
+              </li>
+            ))}
+          </ul>
+        </details>
       </nav>
     </header>
 
-    <main>
+    <main class="flex-1">
       <slot />
     </main>
 
-    <footer class="border-t border-white/5 py-10 text-center text-sm text-zinc-500">
-      <p class="font-display tracking-wider text-zinc-400">SCRIPTZ GAMING 228</p>
-      <p class="mt-2">© {new Date().getFullYear()} — Made in Togo 🇹🇬</p>
+    <footer class="border-t border-white/5 bg-night-900/50">
+      <div class="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-12 md:flex-row md:items-start md:justify-between">
+        <div>
+          <p class="font-display text-lg font-extrabold tracking-wider text-white">
+            {site.shortName}<span class="text-neon-green">{site.tag}</span>
+          </p>
+          <p class="mt-2 text-zinc-500">{site.tagline} · {site.country}</p>
+          {site.email && <a href={`mailto:${site.email}`} class="mt-2 block text-zinc-400 hover:text-neon-green">{site.email}</a>}
+        </div>
+        <ul class="flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold uppercase tracking-wider">
+          {links.map((l) => <li><a href={l.href} class="hover:text-neon-green">{l.label}</a></li>)}
+        </ul>
+        {socials.length > 0 && (
+          <ul class="flex flex-wrap gap-2">
+            {socials.map(([key, url]) => (
+              <li>
+                <a href={url} target="_blank" rel="noopener" class="block rounded-md border border-white/10 px-3 py-1.5 text-sm font-bold text-zinc-300 transition hover:border-neon-green hover:text-neon-green">
+                  {socialLabels[key]}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+      <div class="border-t border-white/5 py-5 text-center text-sm text-zinc-600">
+        © {new Date().getFullYear()} {site.name} · <a href="/connexion" class="hover:text-zinc-400">Espace staff</a>
+      </div>
     </footer>
   </body>
 </html>

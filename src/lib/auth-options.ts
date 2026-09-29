@@ -1,9 +1,9 @@
 import type { BetterAuthOptions } from 'better-auth';
 import type { Pool } from 'pg';
 
-// Options partagées entre l'app (src/lib/auth.ts) et le script de migration (scripts/migrate-auth.ts).
+// Options partagées entre l'app (src/lib/auth.ts) et les scripts (scripts/*.ts).
 // Ce fichier ne doit pas importer de modules `astro:*` pour rester utilisable hors d'Astro.
-export function authOptions(pool: Pool, secret: string, siteURL?: string) {
+export function authOptions(pool: Pool, secret: string, siteURL?: string, { allowSignUp = false } = {}) {
   return {
     appName: 'Scriptz Gaming 228',
     database: pool,
@@ -17,7 +17,13 @@ export function authOptions(pool: Pool, secret: string, siteURL?: string) {
     emailAndPassword: {
       enabled: true,
       minPasswordLength: 8,
-      autoSignIn: true,
+      // Pas d'inscription publique : les comptes staff sont créés avec `npm run admin:create`.
+      disableSignUp: !allowSignUp,
+    },
+    user: {
+      additionalFields: {
+        role: { type: 'string', defaultValue: 'member', input: false },
+      },
     },
     session: {
       expiresIn: 60 * 60 * 24 * 30, // 30 jours

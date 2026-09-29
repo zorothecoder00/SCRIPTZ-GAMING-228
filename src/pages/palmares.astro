@@ -1,0 +1,21 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import EmptyState from '../components/EmptyState.astro';
+import AchievementList from '../components/AchievementList.astro';
+import { getAchievements } from '../lib/content';
+
+const achievements = await getAchievements();
+---
+
+<Layout title="Palmarès" description="Titres et résultats de Scriptz Gaming 228 en compétition.">
+  <PageHeader eyebrow="Trophées & résultats" title="Notre" accent="palmarès" intro="Toutes nos performances en compétition, année par année." />
+
+  <div class="mx-auto max-w-6xl px-4 py-20">
+    {achievements.length ? (
+      <AchievementList achievements={achievements} />
+    ) : (
+      <EmptyState icon="🏆" text="Nos premiers résultats arrivent. Reste connecté !" />
+    )}
+  </div>
+</Layout>

@@ -1,0 +1,116 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { site, socialLabels, type SocialKey } from '../data/site';
+import { getPartners, saveContactMessage } from '../lib/content';
+
+const SUBJECTS = ['Partenariat / sponsoring', 'Recrutement', 'Presse / média', 'Autre'];
+
+let status: 'idle' | 'sent' | 'error' = 'idle';
+let error = '';
+let values = { name: '', email: '', subject: SUBJECTS[0], message: '' };
+
+if (Astro.request.method === 'POST') {
+  const data = await Astro.request.formData();
+  values = {
+    name: String(data.get('name') ?? '').trim().slice(0, 100),
+    email: String(data.get('email') ?? '').trim().slice(0, 200),
+    subject: String(data.get('subject') ?? '').trim().slice(0, 100),
+    message: String(data.get('message') ?? '').trim().slice(0, 5000),
+  };
+
+  if (data.get('website')) {
+    status = 'sent'; // champ piège rempli → robot : on fait semblant.
+  } else if (!values.name || !values.message || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
+    status = 'error';
+    error = 'Merci de remplir ton nom, un e-mail valide et ton message.';
+  } else {
+    try {
+      await saveContactMessage({ ...values, subject: values.subject || null });
+      status = 'sent';
+    } catch (e) {
+      console.error('contact:', e);
+      status = 'error';
+      error = "Le message n'a pas pu être envoyé. Réessaie dans un instant.";
+    }
+  }
+}
+
+const partners = await getPartners();
+const socials = (Object.entries(site.socials) as [SocialKey, string][]).filter(([, url]) => url);
+---
+
+<Layout title="Contact" description="Contacte Scriptz Gaming 228 : partenariats, recrutement, presse.">
+  <PageHeader eyebrow="Parlons-en" title="Nous" accent="contacter" intro="Partenariat, sponsoring, recrutement ou demande média : on te répond rapidement." />
+
+  <div class="mx-auto grid max-w-6xl gap-12 px-4 py-20 lg:grid-cols-[1fr_320px]">
+    <div class="rounded-2xl border border-white/10 bg-night-900 p-6 md:p-8">
+      {status === 'sent' ? (
+        <div class="py-10 text-center">
+          <div class="text-5xl">✅</div>
+          <h2 class="mt-4 font-display text-2xl font-bold text-white">Message envoyé !</h2>
+          <p class="mt-2 text-zinc-400">Merci, l'équipe revient vers toi très vite.</p>
+          <a href="/" class="btn-primary mt-8 inline-block">Retour à l'accueil</a>
+        </div>
+      ) : (
+        <form method="POST" class="space-y-5">
+          <div class="grid gap-5 sm:grid-cols-2">
+            <label class="block">
+              <span class="text-sm font-semibold uppercase tracking-wider text-zinc-400">Nom</span>
+              <input name="name" required maxlength="100" autocomplete="name" value={values.name} class="field" />
+            </label>
+            <label class="block">
+              <span class="text-sm font-semibold uppercase tracking-wider text-zinc-400">E-mail</span>
+              <input name="email" type="email" required maxlength="200" autocomplete="email" value={values.email} class="field" />
+            </label>
+          </div>
+          <label class="block">
+            <span class="text-sm font-semibold uppercase tracking-wider text-zinc-400">Sujet</span>
+            <select name="subject" class="field">
+              {SUBJECTS.map((s) => <option selected={s === values.subject}>{s}</option>)}
+            </select>
+          </label>
+          <label class="block">
+            <span class="text-sm font-semibold uppercase tracking-wider text-zinc-400">Message</span>
+            <textarea name="message" required rows="6" maxlength="5000" class="field">{values.message}</textarea>
+          </label>
+          <!-- Champ piège anti-spam, invisible pour les humains -->
+          <div class="hidden" aria-hidden="true">
+            <input name="website" tabindex="-1" autocomplete="off" />
+          </div>
+          {status === 'error' && <p class="rounded-md bg-neon-pink/10 px-4 py-2 text-neon-pink" role="alert">{error}</p>}
+          <button type="submit" class="btn-primary w-full sm:w-auto">Envoyer</button>
+        </form>
+      )}
+    </div>
+
+    <aside class="space-y-8">
+      {site.email && (
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-widest text-zinc-500">E-mail</p>
+          <a href={`mailto:${site.email}`} class="mt-1 block text-lg text-white hover:text-neon-green">{site.email}</a>
+        </div>
+      )}
+      {socials.length > 0 && (
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-widest text-zinc-500">Réseaux</p>
+          <ul class="mt-3 flex flex-wrap gap-2">
+            {socials.map(([key, url]) => (
+              <li><a href={url} target="_blank" rel="noopener" class="block rounded-md border border-white/10 px-3 py-1.5 text-sm font-bold hover:border-neon-green hover:text-neon-green">{socialLabels[key]}</a></li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {partners.length > 0 && (
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-widest text-zinc-500">Nos partenaires</p>
+          <ul class="mt-3 space-y-2">
+            {partners.map((p) => (
+              <li>{p.website ? <a href={p.website} target="_blank" rel="noopener" class="text-white hover:text-neon-green">{p.name}</a> : <span class="text-white">{p.name}</span>}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </aside>
+  </div>
+</Layout>

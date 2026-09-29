@@ -1,6 +1,7 @@
-// Crée / met à jour les tables Better Auth (user, session, account, verification).
+// Met la base à jour : tables Better Auth (user, session…) + tables du site (scripts/schema.sql).
 //   Local      : npm run db:migrate
 //   Production : npm run db:migrate:prod   (utilise .env.prod.bak → Neon)
+import { readFile } from 'node:fs/promises';
 import { getMigrations } from 'better-auth/db/migration';
 import pg from 'pg';
 import { authOptions } from '../src/lib/auth-options.ts';
@@ -16,13 +17,16 @@ const host = new URL(DATABASE_URL).host;
 
 try {
   const { toBeCreated, toBeAdded, runMigrations } = await getMigrations(authOptions(pool, BETTER_AUTH_SECRET));
-  if (!toBeCreated.length && !toBeAdded.length) {
-    console.log(`✔ ${host} : schéma d'authentification déjà à jour.`);
-  } else {
+  if (toBeCreated.length || toBeAdded.length) {
     await runMigrations();
-    console.log(`✔ ${host} : tables créées [${toBeCreated.map((t) => t.table).join(', ')}]` +
-      (toBeAdded.length ? `, colonnes ajoutées dans [${toBeAdded.map((t) => t.table).join(', ')}]` : ''));
+    console.log(`✔ ${host} : auth — tables [${toBeCreated.map((t) => t.table).join(', ')}]` +
+      ` colonnes ajoutées [${toBeAdded.flatMap((t) => Object.keys(t.fields).map((f) => `${t.table}.${f}`)).join(', ')}]`);
+  } else {
+    console.log(`✔ ${host} : auth déjà à jour.`);
   }
+
+  await pool.query(await readFile(new URL('./schema.sql', import.meta.url), 'utf8'));
+  console.log(`✔ ${host} : tables du site à jour (players, achievements, posts, partners, contact_messages).`);
 } finally {
   await pool.end();
 }

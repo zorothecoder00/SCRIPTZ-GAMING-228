@@ -1,0 +1,80 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { cellValue, deleteRow, getResource, listRows } from '../../../lib/admin-resources';
+
+const key = Astro.params.resource!;
+const resource = getResource(key);
+if (!resource) return new Response(null, { status: 404 });
+
+let notice = Astro.url.searchParams.get('ok') ? 'Enregistré ✔' : '';
+
+if (Astro.request.method === 'POST') {
+  const data = await Astro.request.formData();
+  const id = Number(data.get('id'));
+  if (data.get('action') === 'delete' && Number.isInteger(id)) {
+    await deleteRow(resource, id);
+    notice = 'Supprimé ✔';
+  }
+}
+
+const rows = await listRows(resource);
+const columns = resource.columns.map((name) => resource.fields.find((f) => f.name === name)!);
+---
+
+<AdminLayout title={`${resource.icon} ${resource.label}`}>
+  {!resource.readOnly && (
+    <a slot="actions" href={`/admin/${key}/nouveau`} class="btn-primary !px-5 !py-2 text-sm">+ Ajouter un {resource.singular}</a>
+  )}
+
+  {notice && <p class="mb-6 rounded-md bg-neon-green/10 px-4 py-2 text-neon-green">{notice}</p>}
+
+  {rows.length ? (
+    <div class="overflow-x-auto rounded-xl border border-white/5 bg-night-800">
+      <table class="w-full text-left">
+        <thead class="border-b border-white/5 text-sm uppercase tracking-wider text-zinc-500">
+          <tr>
+            {columns.map((c) => <th class="px-5 py-3 font-semibold">{c.label}</th>)}
+            <th class="px-5 py-3"></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-white/5">
+          {rows.map((row) => (
+            <tr class="hover:bg-white/[0.02]">
+              {columns.map((c, i) => (
+                <td class="px-5 py-3">
+                  {i === 0 ? (
+                    <a href={`/admin/${key}/${row.id}`} class="font-semibold text-white hover:text-neon-green">{cellValue(row[c.name])}</a>
+                  ) : (
+                    <span class="text-zinc-400">{cellValue(row[c.name])}</span>
+                  )}
+                </td>
+              ))}
+              <td class="px-5 py-3 text-right whitespace-nowrap">
+                <a href={`/admin/${key}/${row.id}`} class="mr-4 text-sm font-bold uppercase tracking-wider text-zinc-400 hover:text-neon-green">
+                  {resource.readOnly ? 'Lire' : 'Modifier'}
+                </a>
+                <form method="POST" class="inline" data-confirm={`Supprimer ce ${resource.singular} ?`}>
+                  <input type="hidden" name="action" value="delete" />
+                  <input type="hidden" name="id" value={row.id} />
+                  <button class="text-sm font-bold uppercase tracking-wider text-neon-pink/80 hover:text-neon-pink">Supprimer</button>
+                </form>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  ) : (
+    <p class="rounded-xl border border-dashed border-white/10 px-6 py-12 text-center text-zinc-500">
+      Aucun {resource.singular} pour le moment.
+    </p>
+  )}
+</AdminLayout>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('form[data-confirm]').forEach((form) =>
+    form.addEventListener('submit', (e) => {
+      if (!confirm(form.dataset.confirm)) e.preventDefault();
+    }),
+  );
+</script>

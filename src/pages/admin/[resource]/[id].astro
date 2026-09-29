@@ -1,0 +1,98 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { getResource, getRow, inputValue, insertRow, parseForm, updateRow } from '../../../lib/admin-resources';
+
+const key = Astro.params.resource!;
+const resource = getResource(key);
+const isNew = Astro.params.id === 'nouveau';
+const id = Number(Astro.params.id);
+if (!resource || (!isNew && !Number.isInteger(id)) || (isNew && resource.readOnly)) {
+  return new Response(null, { status: 404 });
+}
+
+let row: Record<string, unknown> | null = isNew ? null : await getRow(resource, id);
+if (!isNew && !row) return new Response(null, { status: 404 });
+
+let errors: string[] = [];
+
+if (Astro.request.method === 'POST' && !resource.readOnly) {
+  const parsed = parseForm(resource, await Astro.request.formData());
+  errors = parsed.errors;
+  if (!errors.length) {
+    try {
+      if (isNew) await insertRow(resource, parsed.values);
+      else await updateRow(resource, id, parsed.values);
+      return Astro.redirect(`/admin/${key}?ok=1`);
+    } catch (e: any) {
+      errors = [e?.code === '23505' ? 'Cette adresse (slug) est déjà utilisée par un autre article.' : `Erreur base de données : ${e?.message ?? e}`];
+    }
+  }
+  row = parsed.values; // on réaffiche la saisie
+}
+
+const title = resource.readOnly
+  ? `${resource.icon} ${resource.singular[0].toUpperCase()}${resource.singular.slice(1)}`
+  : isNew ? `Nouveau ${resource.singular}` : `Modifier le ${resource.singular}`;
+---
+
+<AdminLayout title={title}>
+  <a slot="actions" href={`/admin/${key}`} class="text-sm font-bold uppercase tracking-wider text-zinc-400 hover:text-neon-green">← {resource.label}</a>
+
+  {resource.readOnly ? (
+    <dl class="max-w-3xl space-y-5 rounded-xl border border-white/5 bg-night-800 p-6">
+      {resource.fields.map((f) => (
+        <div>
+          <dt class="text-sm font-semibold uppercase tracking-wider text-zinc-500">{f.label}</dt>
+          <dd class="mt-1 whitespace-pre-line text-white">
+            {f.name === 'email' && row?.email ? <a href={`mailto:${row.email}`} class="text-neon-green hover:underline">{String(row.email)}</a> : (f.type === 'date' && row?.[f.name] instanceof Date ? (row[f.name] as Date).toLocaleString('fr-FR') : String(row?.[f.name] ?? '—'))}
+          </dd>
+        </div>
+      ))}
+    </dl>
+  ) : (
+    <form method="POST" class="max-w-3xl space-y-5 rounded-xl border border-white/5 bg-night-800 p-6">
+      {errors.length > 0 && (
+        <ul class="space-y-1 rounded-md bg-neon-pink/10 px-4 py-3 text-neon-pink" role="alert">
+          {errors.map((e) => <li>{e}</li>)}
+        </ul>
+      )}
+
+      {resource.fields.map((f) =>
+        f.type === 'checkbox' ? (
+          <label class="flex items-center gap-3">
+            <input type="checkbox" name={f.name} checked={row ? Boolean(row[f.name]) : Boolean(f.default)} class="h-5 w-5 accent-neon-green" />
+            <span class="font-semibold text-white">{f.label}</span>
+          </label>
+        ) : (
+          <label class="block">
+            <span class="text-sm font-semibold uppercase tracking-wider text-zinc-400">
+              {f.label}{f.required && <span class="text-neon-pink"> *</span>}
+            </span>
+            {f.type === 'textarea' ? (
+              <textarea name={f.name} rows={f.name === 'content' ? 14 : 4} required={f.required} class="field">{inputValue(f, row)}</textarea>
+            ) : (
+              <input
+                name={f.name}
+                type={f.type === 'number' ? 'number' : f.type === 'url' ? 'url' : f.type === 'date' ? 'date' : 'text'}
+                value={inputValue(f, row)}
+                required={f.required}
+                placeholder={f.placeholder}
+                maxlength={f.type === 'country' ? 2 : undefined}
+                class:list={['field', f.type === 'country' && 'uppercase']}
+              />
+            )}
+            {f.help && <span class="mt-1 block text-sm text-zinc-500">{f.help}</span>}
+            {f.name.endsWith('_url') && /^https?:\/\//i.test(String(row?.[f.name] ?? '')) && (
+              <img src={String(row[f.name])} alt="" class="mt-3 h-24 rounded-md border border-white/10 object-cover" />
+            )}
+          </label>
+        ),
+      )}
+
+      <div class="flex gap-4 pt-2">
+        <button type="submit" class="btn-primary">Enregistrer</button>
+        <a href={`/admin/${key}`} class="rounded-md border border-white/10 px-6 py-3 font-bold uppercase tracking-wider text-zinc-300 hover:border-white/30">Annuler</a>
+      </div>
+    </form>
+  )}
+</AdminLayout>

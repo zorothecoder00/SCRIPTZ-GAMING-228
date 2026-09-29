@@ -1,0 +1,22 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { formatDate, getPost, paragraphs } from '../../lib/content';
+
+const post = await getPost(Astro.params.slug!);
+if (!post) return new Response(null, { status: 404, statusText: 'Article introuvable' });
+---
+
+<Layout title={post.title} description={post.excerpt ?? undefined} image={post.cover_url}>
+  <article class="mx-auto max-w-3xl px-4 py-16">
+    <a href="/actualites" class="text-sm font-bold uppercase tracking-wider text-zinc-500 hover:text-neon-green">← Actualités</a>
+    <time class="mt-8 block text-sm font-semibold uppercase tracking-wider text-neon-pink">{formatDate(post.published_at)}</time>
+    <h1 class="mt-2 font-display text-3xl font-extrabold leading-tight text-white md:text-5xl">{post.title}</h1>
+    {post.excerpt && <p class="mt-4 text-xl text-zinc-400">{post.excerpt}</p>}
+    {post.cover_url && (
+      <img src={post.cover_url} alt="" class="mt-10 aspect-video w-full rounded-xl border border-white/5 object-cover" />
+    )}
+    <div class="mt-10 space-y-5 text-lg leading-relaxed text-zinc-300">
+      {paragraphs(post.content).map((p) => <p class="whitespace-pre-line">{p}</p>)}
+    </div>
+  </article>
+</Layout>

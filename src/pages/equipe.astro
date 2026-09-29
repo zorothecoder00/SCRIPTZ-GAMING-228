@@ -1,0 +1,33 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import EmptyState from '../components/EmptyState.astro';
+import PlayerCard from '../components/PlayerCard.astro';
+import { getPlayers } from '../lib/content';
+
+const players = await getPlayers();
+// Un bloc par jeu (division), dans l'ordre du roster.
+const divisions = Map.groupBy(players, (p) => p.game);
+---
+
+<Layout title="Équipe" description="Le roster de Scriptz Gaming 228 : nos joueurs et nos divisions.">
+  <PageHeader eyebrow="Le roster" title="Notre" accent="équipe" intro="Les joueurs qui portent les couleurs de Scriptz Gaming 228." />
+
+  <div class="mx-auto max-w-6xl space-y-16 px-4 py-20">
+    {players.length ? (
+      [...divisions].map(([game, list]) => (
+        <section>
+          <h2 class="flex items-center gap-4 font-display text-2xl font-bold text-white">
+            {game}
+            <span class="h-px flex-1 bg-gradient-to-r from-neon-green/40 to-transparent"></span>
+          </h2>
+          <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {list.map((p) => <PlayerCard player={p} />)}
+          </div>
+        </section>
+      ))
+    ) : (
+      <EmptyState icon="🕹️" text="Le roster sera dévoilé très bientôt." />
+    )}
+  </div>
+</Layout>
