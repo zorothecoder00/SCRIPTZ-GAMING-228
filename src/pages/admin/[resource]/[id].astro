@@ -39,23 +39,23 @@ const title = resource.readOnly
 ---
 
 <AdminLayout title={title}>
-  <a slot="actions" href={`/admin/${key}`} class="text-sm font-bold uppercase tracking-wider text-zinc-400 hover:text-neon-green">← {resource.label}</a>
+  <a slot="actions" href={`/admin/${key}`} class="text-sm font-bold uppercase tracking-wider text-ink-soft hover:text-brand">← {resource.label}</a>
 
   {resource.readOnly ? (
-    <dl class="max-w-3xl space-y-5 rounded-xl border border-white/5 bg-night-800 p-6">
+    <dl class="max-w-3xl space-y-5 rounded-xl border border-ink/10 bg-paper p-6">
       {resource.fields.map((f) => (
         <div>
-          <dt class="text-sm font-semibold uppercase tracking-wider text-zinc-500">{f.label}</dt>
-          <dd class="mt-1 whitespace-pre-line text-white">
-            {f.name === 'email' && row?.email ? <a href={`mailto:${row.email}`} class="text-neon-green hover:underline">{String(row.email)}</a> : (f.type === 'date' && row?.[f.name] instanceof Date ? (row[f.name] as Date).toLocaleString('fr-FR') : String(row?.[f.name] ?? '—'))}
+          <dt class="text-sm font-semibold uppercase tracking-wider text-ink-muted">{f.label}</dt>
+          <dd class="mt-1 whitespace-pre-line text-ink">
+            {f.name === 'email' && row?.email ? <a href={`mailto:${row.email}`} class="text-brand hover:underline">{String(row.email)}</a> : (f.type === 'date' && row?.[f.name] instanceof Date ? (row[f.name] as Date).toLocaleString('fr-FR') : String(row?.[f.name] ?? '—'))}
           </dd>
         </div>
       ))}
     </dl>
   ) : (
-    <form method="POST" class="max-w-3xl space-y-5 rounded-xl border border-white/5 bg-night-800 p-6">
+    <form method="POST" class="max-w-3xl space-y-5 rounded-xl border border-ink/10 bg-paper p-6">
       {errors.length > 0 && (
-        <ul class="space-y-1 rounded-md bg-neon-pink/10 px-4 py-3 text-neon-pink" role="alert">
+        <ul class="space-y-1 rounded-md bg-brand/10 px-4 py-3 text-brand" role="alert">
           {errors.map((e) => <li>{e}</li>)}
         </ul>
       )}
@@ -64,25 +64,25 @@ const title = resource.readOnly
         const Field = isImage(f) ? 'div' : 'label';
         return f.type === 'checkbox' ? (
           <label class="flex items-center gap-3">
-            <input type="checkbox" name={f.name} checked={row ? Boolean(row[f.name]) : Boolean(f.default)} class="h-5 w-5 accent-neon-green" />
-            <span class="font-semibold text-white">{f.label}</span>
+            <input type="checkbox" name={f.name} checked={row ? Boolean(row[f.name]) : Boolean(f.default)} class="h-5 w-5 accent-brand" />
+            <span class="font-semibold text-ink">{f.label}</span>
           </label>
         ) : (
           <Field class="block">
-            <span class="text-sm font-semibold uppercase tracking-wider text-zinc-400">
-              {f.label}{f.required && <span class="text-neon-pink"> *</span>}
+            <span class="text-sm font-semibold uppercase tracking-wider text-ink-soft">
+              {f.label}{f.required && <span class="text-brand"> *</span>}
             </span>
             {isImage(f) ? (
               <div data-image-upload data-folder={key}>
                 <div class="flex flex-col gap-2 sm:flex-row">
                   <input name={f.name} type="url" value={inputValue(f, row)} placeholder="https://… ou téléverse une image" class="field sm:flex-1" />
-                  <label class="mt-2 inline-flex cursor-pointer items-center justify-center rounded-md border border-neon-green/60 px-4 py-2.5 text-sm font-bold uppercase tracking-wider whitespace-nowrap text-neon-green transition hover:bg-neon-green hover:text-night-950">
+                  <label class="mt-2 inline-flex cursor-pointer items-center justify-center rounded-md border border-brand/60 px-4 py-2.5 text-sm font-bold uppercase tracking-wider whitespace-nowrap text-brand transition hover:bg-brand hover:text-cream">
                     Téléverser
                     <input type="file" accept="image/*" class="sr-only" />
                   </label>
                 </div>
                 <p data-status class="text-sm"></p>
-                <img data-preview hidden={!/^https?:\/\//i.test(inputValue(f, row))} src={inputValue(f, row) || undefined} alt="" class="mt-3 h-28 rounded-md border border-white/10 bg-night-900 object-contain" />
+                <img data-preview hidden={!/^https?:\/\//i.test(inputValue(f, row))} src={inputValue(f, row) || undefined} alt="" class="mt-3 h-28 rounded-md border border-ink/15 bg-cream-dark object-contain" />
               </div>
             ) : f.type === 'textarea' ? (
               <textarea name={f.name} rows={f.name === 'content' ? 14 : 4} required={f.required} class="field">{inputValue(f, row)}</textarea>
@@ -97,14 +97,14 @@ const title = resource.readOnly
                 class:list={['field', f.type === 'country' && 'uppercase']}
               />
             )}
-            {f.help && <span class="mt-1 block text-sm text-zinc-500">{f.help}</span>}
+            {f.help && <span class="mt-1 block text-sm text-ink-muted">{f.help}</span>}
           </Field>
         );
       })}
 
       <div class="flex gap-4 pt-2">
         <button type="submit" class="btn-primary">Enregistrer</button>
-        <a href={`/admin/${key}`} class="rounded-md border border-white/10 px-6 py-3 font-bold uppercase tracking-wider text-zinc-300 hover:border-white/30">Annuler</a>
+        <a href={`/admin/${key}`} class="rounded-md border border-ink/15 px-6 py-3 font-bold uppercase tracking-wider text-ink-soft hover:border-ink/40">Annuler</a>
       </div>
     </form>
   )}

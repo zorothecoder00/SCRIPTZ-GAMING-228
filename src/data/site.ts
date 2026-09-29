@@ -6,7 +6,8 @@ export const site = {
   tag: '228',
   tagline: 'Équipe esport togolaise',
   description: "Scriptz Gaming 228 — équipe esport togolaise. Découvre nos joueurs, notre palmarès et nos actualités.",
-  country: 'Togo 🇹🇬',
+  country: 'Togo',
+  countryCode: 'TG',
   email: '', // ex. contact@scriptz228.com
   socials: {
     instagram: '',

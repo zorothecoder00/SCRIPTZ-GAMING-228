@@ -17,9 +17,9 @@ const divisions = Map.groupBy(players, (p) => p.game);
     {players.length ? (
       [...divisions].map(([game, list]) => (
         <section>
-          <h2 class="flex items-center gap-4 font-display text-2xl font-bold text-white">
+          <h2 class="flex items-center gap-4 font-display text-2xl font-bold text-ink">
             {game}
-            <span class="h-px flex-1 bg-gradient-to-r from-neon-green/40 to-transparent"></span>
+            <span class="h-px flex-1 bg-gradient-to-r from-brand/40 to-transparent"></span>
           </h2>
           <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {list.map((p) => <PlayerCard player={p} />)}

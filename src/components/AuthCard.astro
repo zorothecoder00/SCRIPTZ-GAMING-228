@@ -6,11 +6,11 @@ interface Props {
 const { title, subtitle } = Astro.props;
 ---
 
-<section class="bg-grid relative flex min-h-[calc(100vh-9rem)] items-center justify-center px-4 py-16">
-  <div class="pointer-events-none absolute top-10 left-1/2 h-[400px] w-[600px] -translate-x-1/2 rounded-full bg-neon-purple/15 blur-3xl"></div>
-  <div class="relative w-full max-w-md rounded-2xl border border-white/10 bg-night-900/90 p-8 shadow-2xl backdrop-blur">
-    <h1 class="font-display text-2xl font-extrabold text-white">{title}</h1>
-    {subtitle && <p class="mt-2 text-zinc-400">{subtitle}</p>}
+<section class="bg-grid relative flex overflow-hidden min-h-[calc(100vh-9rem)] items-center justify-center px-4 py-16">
+  <div class="pointer-events-none absolute top-10 left-1/2 h-[400px] w-[600px] -translate-x-1/2 rounded-full bg-brand/10 blur-3xl"></div>
+  <div class="relative w-full max-w-md rounded-2xl border border-ink/15 bg-paper/95 p-8 shadow-2xl backdrop-blur">
+    <h1 class="font-display text-2xl font-extrabold text-ink">{title}</h1>
+    {subtitle && <p class="mt-2 text-ink-soft">{subtitle}</p>}
     <div class="mt-8">
       <slot />
     </div>

@@ -5,6 +5,7 @@ import EmptyState from '../components/EmptyState.astro';
 import PlayerCard from '../components/PlayerCard.astro';
 import PostCard from '../components/PostCard.astro';
 import AchievementList from '../components/AchievementList.astro';
+import Flag from '../components/Flag.astro';
 import { site } from '../data/site';
 import { getAchievements, getPartners, getPlayers, getPosts, isWin } from '../lib/content';
 
@@ -27,20 +28,21 @@ const stats = [
 <Layout>
   <!-- HERO -->
   <section class="bg-grid relative overflow-hidden">
-    <div class="pointer-events-none absolute -top-40 left-1/2 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-neon-purple/20 blur-3xl"></div>
-    <div class="relative mx-auto flex max-w-6xl flex-col items-center px-4 py-28 text-center md:py-36">
-      <span class="mb-6 rounded-full border border-neon-green/40 bg-neon-green/10 px-4 py-1 text-sm font-semibold uppercase tracking-widest text-neon-green">
-        {site.tagline} · {site.country}
+    <div class="pointer-events-none absolute -top-40 left-1/2 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-brand/10 blur-3xl"></div>
+    <div class="relative mx-auto flex max-w-6xl flex-col items-center px-4 py-20 text-center md:py-28">
+      <span class="mb-6 rounded-full border border-brand/40 bg-brand/10 px-4 py-1 text-sm font-semibold uppercase tracking-widest text-brand">
+        {site.tagline} · {site.country} <Flag code={site.countryCode} />
       </span>
-      <h1 class="font-display text-4xl font-extrabold leading-tight text-white sm:text-6xl md:text-7xl">
-        SCRIPTZ <span class="text-gradient">GAMING</span> 228
+      <h1>
+        <span class="sr-only">{site.name}</span>
+        <img src="/logo.png" alt="" width="412" height="284" fetchpriority="high" class="mx-auto h-auto w-64 sm:w-80 md:w-96" />
       </h1>
-      <p class="mt-6 max-w-2xl text-xl text-zinc-400">
+      <p class="mt-6 max-w-2xl text-xl text-ink-soft">
         Talent, discipline et esprit d'équipe. Découvre nos joueurs, nos résultats et suis l'aventure Scriptz.
       </p>
       <div class="mt-10 flex flex-col gap-4 sm:flex-row">
         <a href="/equipe" class="btn-primary">Découvrir l'équipe</a>
-        <a href="/palmares" class="rounded-md border border-white/15 px-8 py-3 font-bold uppercase tracking-wider text-white transition hover:border-neon-purple hover:text-neon-purple">
+        <a href="/palmares" class="rounded-md border border-ink/20 px-8 py-3 font-bold uppercase tracking-wider text-ink transition hover:border-brand hover:text-brand">
           Notre palmarès
         </a>
       </div>
@@ -49,8 +51,8 @@ const stats = [
           {stats.map((s) => (
             <div>
               <dt class="sr-only">{s.label}</dt>
-              <dd class="font-display text-4xl font-extrabold text-white">{s.value}</dd>
-              <p class="text-sm font-semibold uppercase tracking-widest text-zinc-500">{s.label}</p>
+              <dd class="font-display text-4xl font-extrabold text-ink">{s.value}</dd>
+              <p class="text-sm font-semibold uppercase tracking-widest text-ink-muted">{s.label}</p>
             </div>
           ))}
         </dl>
@@ -73,7 +75,7 @@ const stats = [
   </section>
 
   <!-- PALMARÈS -->
-  <section class="border-y border-white/5 bg-night-900">
+  <section class="border-y border-ink/10 bg-cream-dark">
     <div class="mx-auto max-w-6xl px-4 py-24">
       <SectionTitle eyebrow="Trophées & résultats" title="Notre" accent="palmarès" href={achievements.length > 5 ? '/palmares' : undefined} />
       <div class="mt-10">
@@ -102,9 +104,9 @@ const stats = [
 
   <!-- PARTENAIRES -->
   {partners.length > 0 && (
-    <section class="border-t border-white/5 bg-night-900">
+    <section class="border-t border-ink/10 bg-cream-dark">
       <div class="mx-auto max-w-6xl px-4 py-16">
-        <p class="text-center text-sm font-semibold uppercase tracking-[0.25em] text-zinc-500">Ils nous soutiennent</p>
+        <p class="text-center text-sm font-semibold uppercase tracking-[0.25em] text-ink-muted">Ils nous soutiennent</p>
         <ul class="mt-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-8">
           {partners.map((p) => (
             <li>
@@ -112,7 +114,7 @@ const stats = [
                 {p.logo_url ? (
                   <img src={p.logo_url} alt={p.name} loading="lazy" class="h-12 w-auto max-w-40 object-contain" />
                 ) : (
-                  <span class="font-display text-xl font-bold text-white">{p.name}</span>
+                  <span class="font-display text-xl font-bold text-ink">{p.name}</span>
                 )}
               </a>
             </li>
@@ -124,10 +126,11 @@ const stats = [
 
   <!-- CTA -->
   <section class="px-4 py-24">
-    <div class="relative mx-auto max-w-6xl overflow-hidden rounded-2xl border border-neon-purple/30 bg-gradient-to-r from-neon-purple/20 via-night-800 to-neon-pink/20 px-6 py-16 text-center">
-      <h2 class="font-display text-3xl font-extrabold text-white md:text-4xl">Partenariat, recrutement, média ?</h2>
-      <p class="mx-auto mt-4 max-w-xl text-zinc-300">Tu veux soutenir l'équipe ou travailler avec nous ? Écris-nous.</p>
-      <a href="/contact" class="btn-primary mt-8 inline-block">Nous contacter</a>
+    <div class="relative mx-auto max-w-6xl overflow-hidden rounded-2xl bg-ink px-6 py-16 text-center">
+      <div class="pointer-events-none absolute -right-20 -bottom-24 h-72 w-72 rounded-full bg-brand/30 blur-3xl"></div>
+      <h2 class="relative font-display text-3xl font-extrabold text-cream md:text-4xl">Partenariat, recrutement, média ?</h2>
+      <p class="relative mx-auto mt-4 max-w-xl text-cream/75">Tu veux soutenir l'équipe ou travailler avec nous ? Écris-nous.</p>
+      <a href="/contact" class="relative mt-8 inline-block rounded-md bg-brand px-8 py-3 font-bold uppercase tracking-wider text-cream transition hover:bg-brand-dark">Nous contacter</a>
     </div>
   </section>
 </Layout>

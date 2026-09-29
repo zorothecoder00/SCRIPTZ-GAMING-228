@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import Flag from '../components/Flag.astro';
 import { site, socialLabels, type SocialKey } from '../data/site';
 
 interface Props {
@@ -29,13 +30,14 @@ const socials = (Object.entries(site.socials) as [SocialKey, string][]).filter((
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#07070c" />
+    <meta name="theme-color" content="#fdeedb" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    {image && <meta property="og:image" content={image} />}
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <meta property="og:image" content={new URL(image ?? '/og.png', Astro.url)} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -46,33 +48,33 @@ const socials = (Object.entries(site.socials) as [SocialKey, string][]).filter((
     <title>{fullTitle}</title>
   </head>
   <body class="flex min-h-screen flex-col">
-    <header class="sticky top-0 z-50 border-b border-white/5 bg-night-950/80 backdrop-blur">
-      <nav class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-        <a href="/" class="font-display text-lg font-extrabold tracking-wider text-white">
-          {site.shortName}<span class="text-neon-green">{site.tag}</span>
+    <header class="sticky top-0 z-50 border-b border-ink/10 bg-cream/85 backdrop-blur">
+      <nav class="mx-auto flex max-w-6xl items-center justify-between px-4 py-2.5">
+        <a href="/" aria-label={`${site.name} — accueil`}>
+          <img src="/logo.png" alt={site.name} width="412" height="284" class="h-11 w-auto" />
         </a>
 
         <ul class="hidden gap-8 text-sm font-semibold uppercase tracking-widest md:flex">
           {links.map((l) => (
             <li>
-              <a href={l.href} class:list={['transition hover:text-neon-green', isActive(l.href) && 'text-neon-green']}>{l.label}</a>
+              <a href={l.href} class:list={['transition hover:text-brand', isActive(l.href) && 'text-brand']}>{l.label}</a>
             </li>
           ))}
         </ul>
 
-        <a href="/contact" class="hidden rounded-md border border-neon-green px-4 py-2 text-sm font-bold uppercase tracking-wider text-neon-green transition hover:bg-neon-green hover:text-night-950 md:block">
+        <a href="/contact" class="hidden rounded-md border border-brand px-4 py-2 text-sm font-bold uppercase tracking-wider text-brand transition hover:bg-brand hover:text-cream md:block">
           Nous contacter
         </a>
 
         <!-- Menu mobile -->
         <details class="group relative md:hidden">
-          <summary class="cursor-pointer list-none rounded-md border border-white/10 px-3 py-2 text-sm font-bold uppercase tracking-wider text-white [&::-webkit-details-marker]:hidden">
+          <summary class="cursor-pointer list-none rounded-md border border-ink/15 px-3 py-2 text-sm font-bold uppercase tracking-wider text-ink [&::-webkit-details-marker]:hidden">
             <span class="group-open:hidden">Menu</span><span class="hidden group-open:inline">Fermer</span>
           </summary>
-          <ul class="absolute right-0 mt-3 w-56 space-y-1 rounded-xl border border-white/10 bg-night-900 p-3 shadow-2xl">
+          <ul class="absolute right-0 mt-3 w-56 space-y-1 rounded-xl border border-ink/15 bg-cream-dark p-3 shadow-2xl">
             {links.map((l) => (
               <li>
-                <a href={l.href} class:list={['block rounded-md px-3 py-2 font-semibold uppercase tracking-wider hover:bg-white/5', isActive(l.href) ? 'text-neon-green' : 'text-zinc-200']}>{l.label}</a>
+                <a href={l.href} class:list={['block rounded-md px-3 py-2 font-semibold uppercase tracking-wider hover:bg-ink/5', isActive(l.href) ? 'text-brand' : 'text-ink']}>{l.label}</a>
               </li>
             ))}
           </ul>
@@ -84,23 +86,21 @@ const socials = (Object.entries(site.socials) as [SocialKey, string][]).filter((
       <slot />
     </main>
 
-    <footer class="border-t border-white/5 bg-night-900/50">
+    <footer class="border-t border-ink/10 bg-cream-dark/60">
       <div class="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-12 md:flex-row md:items-start md:justify-between">
         <div>
-          <p class="font-display text-lg font-extrabold tracking-wider text-white">
-            {site.shortName}<span class="text-neon-green">{site.tag}</span>
-          </p>
-          <p class="mt-2 text-zinc-500">{site.tagline} · {site.country}</p>
-          {site.email && <a href={`mailto:${site.email}`} class="mt-2 block text-zinc-400 hover:text-neon-green">{site.email}</a>}
+          <img src="/logo.png" alt={site.name} width="412" height="284" loading="lazy" class="h-16 w-auto" />
+          <p class="mt-2 text-ink-muted">{site.tagline} · {site.country} <Flag code={site.countryCode} /></p>
+          {site.email && <a href={`mailto:${site.email}`} class="mt-2 block text-ink-soft hover:text-brand">{site.email}</a>}
         </div>
         <ul class="flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold uppercase tracking-wider">
-          {links.map((l) => <li><a href={l.href} class="hover:text-neon-green">{l.label}</a></li>)}
+          {links.map((l) => <li><a href={l.href} class="hover:text-brand">{l.label}</a></li>)}
         </ul>
         {socials.length > 0 && (
           <ul class="flex flex-wrap gap-2">
             {socials.map(([key, url]) => (
               <li>
-                <a href={url} target="_blank" rel="noopener" class="block rounded-md border border-white/10 px-3 py-1.5 text-sm font-bold text-zinc-300 transition hover:border-neon-green hover:text-neon-green">
+                <a href={url} target="_blank" rel="noopener" class="block rounded-md border border-ink/15 px-3 py-1.5 text-sm font-bold text-ink-soft transition hover:border-brand hover:text-brand">
                   {socialLabels[key]}
                 </a>
               </li>
@@ -108,8 +108,8 @@ const socials = (Object.entries(site.socials) as [SocialKey, string][]).filter((
           </ul>
         )}
       </div>
-      <div class="border-t border-white/5 py-5 text-center text-sm text-zinc-600">
-        © {new Date().getFullYear()} {site.name} · <a href="/connexion" class="hover:text-zinc-400">Espace staff</a>
+      <div class="border-t border-ink/10 py-5 text-center text-sm text-ink-muted">
+        © {new Date().getFullYear()} {site.name} · <a href="/connexion" class="hover:text-ink-soft">Espace staff</a>
       </div>
     </footer>
   </body>

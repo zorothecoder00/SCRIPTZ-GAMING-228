@@ -1,0 +1,21 @@
+---
+// Drapeau en image (les emojis drapeaux ne s'affichent pas sous Windows).
+interface Props {
+  code: string;
+  class?: string;
+}
+const { code, class: className } = Astro.props;
+const iso = code.trim().toLowerCase();
+---
+
+{/^[a-z]{2}$/.test(iso) && (
+  <img
+    src={`https://flagcdn.com/${iso}.svg`}
+    alt={iso.toUpperCase()}
+    title={iso.toUpperCase()}
+    width="20"
+    height="15"
+    loading="lazy"
+    class:list={['inline-block h-[0.75em] w-auto rounded-[2px] align-baseline shadow-[0_0_0_1px_rgb(0_0_0/0.08)]', className]}
+  />
+)}

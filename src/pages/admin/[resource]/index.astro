@@ -26,37 +26,37 @@ const columns = resource.columns.map((name) => resource.fields.find((f) => f.nam
     <a slot="actions" href={`/admin/${key}/nouveau`} class="btn-primary !px-5 !py-2 text-sm">+ Ajouter un {resource.singular}</a>
   )}
 
-  {notice && <p class="mb-6 rounded-md bg-neon-green/10 px-4 py-2 text-neon-green">{notice}</p>}
+  {notice && <p class="mb-6 rounded-md bg-ink px-4 py-2 font-semibold text-cream">{notice}</p>}
 
   {rows.length ? (
-    <div class="overflow-x-auto rounded-xl border border-white/5 bg-night-800">
+    <div class="overflow-x-auto rounded-xl border border-ink/10 bg-paper">
       <table class="w-full text-left">
-        <thead class="border-b border-white/5 text-sm uppercase tracking-wider text-zinc-500">
+        <thead class="border-b border-ink/10 text-sm uppercase tracking-wider text-ink-muted">
           <tr>
             {columns.map((c) => <th class="px-5 py-3 font-semibold">{c.label}</th>)}
             <th class="px-5 py-3"></th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-white/5">
+        <tbody class="divide-y divide-ink/10">
           {rows.map((row) => (
-            <tr class="hover:bg-white/[0.02]">
+            <tr class="hover:bg-ink/[0.03]">
               {columns.map((c, i) => (
                 <td class="px-5 py-3">
                   {i === 0 ? (
-                    <a href={`/admin/${key}/${row.id}`} class="font-semibold text-white hover:text-neon-green">{cellValue(row[c.name])}</a>
+                    <a href={`/admin/${key}/${row.id}`} class="font-semibold text-ink hover:text-brand">{cellValue(row[c.name])}</a>
                   ) : (
-                    <span class="text-zinc-400">{cellValue(row[c.name])}</span>
+                    <span class="text-ink-soft">{cellValue(row[c.name])}</span>
                   )}
                 </td>
               ))}
               <td class="px-5 py-3 text-right whitespace-nowrap">
-                <a href={`/admin/${key}/${row.id}`} class="mr-4 text-sm font-bold uppercase tracking-wider text-zinc-400 hover:text-neon-green">
+                <a href={`/admin/${key}/${row.id}`} class="mr-4 text-sm font-bold uppercase tracking-wider text-ink-soft hover:text-brand">
                   {resource.readOnly ? 'Lire' : 'Modifier'}
                 </a>
                 <form method="POST" class="inline" data-confirm={`Supprimer ce ${resource.singular} ?`}>
                   <input type="hidden" name="action" value="delete" />
                   <input type="hidden" name="id" value={row.id} />
-                  <button class="text-sm font-bold uppercase tracking-wider text-neon-pink/80 hover:text-neon-pink">Supprimer</button>
+                  <button class="text-sm font-bold uppercase tracking-wider text-brand/80 hover:text-brand">Supprimer</button>
                 </form>
               </td>
             </tr>
@@ -65,7 +65,7 @@ const columns = resource.columns.map((name) => resource.fields.find((f) => f.nam
       </table>
     </div>
   ) : (
-    <p class="rounded-xl border border-dashed border-white/10 px-6 py-12 text-center text-zinc-500">
+    <p class="rounded-xl border border-dashed border-ink/15 px-6 py-12 text-center text-ink-muted">
       Aucun {resource.singular} pour le moment.
     </p>
   )}

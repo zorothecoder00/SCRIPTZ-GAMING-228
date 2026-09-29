@@ -18,27 +18,27 @@ const { rows: lastMessages } = await query<{ id: number; name: string; subject: 
 <AdminLayout title={`Salut, ${Astro.locals.user!.name} 👋`}>
   <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
     {counts.map((c) => (
-      <a href={`/admin/${c.key}`} class="rounded-xl border border-white/5 bg-night-800 p-5 transition hover:border-neon-green/50">
+      <a href={`/admin/${c.key}`} class="rounded-xl border border-ink/10 bg-paper p-5 transition hover:border-brand/50">
         <p class="text-2xl">{c.icon}</p>
-        <p class="mt-3 font-display text-3xl font-extrabold text-white">{c.count}</p>
-        <p class="text-sm font-semibold uppercase tracking-wider text-zinc-500">{c.label}</p>
+        <p class="mt-3 font-display text-3xl font-extrabold text-ink">{c.count}</p>
+        <p class="text-sm font-semibold uppercase tracking-wider text-ink-muted">{c.label}</p>
       </a>
     ))}
   </div>
 
-  <h2 class="mt-12 font-display text-xl font-bold text-white">Derniers messages</h2>
+  <h2 class="mt-12 font-display text-xl font-bold text-ink">Derniers messages</h2>
   {lastMessages.length ? (
-    <ul class="mt-4 divide-y divide-white/5 rounded-xl border border-white/5 bg-night-800">
+    <ul class="mt-4 divide-y divide-ink/10 rounded-xl border border-ink/10 bg-paper">
       {lastMessages.map((m) => (
         <li>
-          <a href={`/admin/messages/${m.id}`} class="flex flex-wrap justify-between gap-2 px-5 py-3 hover:bg-white/5">
-            <span class="text-white">{m.name} <span class="text-zinc-500">· {m.subject ?? 'Sans sujet'}</span></span>
-            <span class="text-sm text-zinc-500">{m.created_at.toLocaleDateString('fr-FR')}</span>
+          <a href={`/admin/messages/${m.id}`} class="flex flex-wrap justify-between gap-2 px-5 py-3 hover:bg-ink/5">
+            <span class="text-ink">{m.name} <span class="text-ink-muted">· {m.subject ?? 'Sans sujet'}</span></span>
+            <span class="text-sm text-ink-muted">{m.created_at.toLocaleDateString('fr-FR')}</span>
           </a>
         </li>
       ))}
     </ul>
   ) : (
-    <p class="mt-4 text-zinc-500">Aucun message pour le moment.</p>
+    <p class="mt-4 text-ink-muted">Aucun message pour le moment.</p>
   )}
 </AdminLayout>

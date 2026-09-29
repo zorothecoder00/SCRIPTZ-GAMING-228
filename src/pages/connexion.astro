@@ -7,14 +7,14 @@ import AuthCard from '../components/AuthCard.astro';
   <AuthCard title="Espace staff" subtitle="Connexion réservée aux administrateurs de l'équipe.">
     <form id="signin-form" class="space-y-5">
       <label class="block">
-        <span class="text-sm font-semibold uppercase tracking-wider text-zinc-400">E-mail</span>
+        <span class="text-sm font-semibold uppercase tracking-wider text-ink-soft">E-mail</span>
         <input name="email" type="email" required autocomplete="email" class="field" />
       </label>
       <label class="block">
-        <span class="text-sm font-semibold uppercase tracking-wider text-zinc-400">Mot de passe</span>
+        <span class="text-sm font-semibold uppercase tracking-wider text-ink-soft">Mot de passe</span>
         <input name="password" type="password" required autocomplete="current-password" class="field" />
       </label>
-      <p id="form-error" class="hidden rounded-md bg-neon-pink/10 px-4 py-2 text-neon-pink" role="alert"></p>
+      <p id="form-error" class="hidden rounded-md bg-brand/10 px-4 py-2 text-brand" role="alert"></p>
       <button type="submit" class="btn-primary w-full">Se connecter</button>
     </form>
   </AuthCard>

@@ -16,44 +16,44 @@ const current = Astro.url.pathname;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Rajdhani:wght@400;500;700&display=swap" rel="stylesheet" />
     <title>{title} · Admin Scriptz</title>
   </head>
   <body class="md:flex">
-    <aside class="border-b border-white/5 bg-night-900 md:sticky md:top-0 md:h-screen md:w-60 md:shrink-0 md:border-r md:border-b-0">
+    <aside class="border-b border-ink/10 bg-cream-dark md:sticky md:top-0 md:h-screen md:w-60 md:shrink-0 md:border-r md:border-b-0">
       <div class="flex items-center justify-between p-4 md:block md:p-6">
-        <a href="/admin" class="font-display text-lg font-extrabold tracking-wider text-white">
-          SCRIPTZ<span class="text-neon-green">228</span>
-          <span class="ml-1 rounded bg-neon-purple/20 px-1.5 py-0.5 align-middle text-xs text-neon-purple">ADMIN</span>
+        <a href="/admin" class="flex items-center gap-2">
+          <img src="/logo.png" alt="Scriptz Gaming 228" width="412" height="284" class="h-10 w-auto" />
+          <span class="rounded bg-ink px-1.5 py-0.5 text-xs font-bold tracking-wider text-cream">ADMIN</span>
         </a>
-        <a href="/" class="text-sm text-zinc-500 hover:text-neon-green md:mt-2 md:block">← Voir le site</a>
+        <a href="/" class="text-sm text-ink-muted hover:text-brand md:mt-2 md:block">← Voir le site</a>
       </div>
       <nav class="flex gap-1 overflow-x-auto px-4 pb-4 md:flex-col md:px-3">
-        <a href="/admin" class:list={['whitespace-nowrap rounded-md px-3 py-2 font-semibold hover:bg-white/5', current === '/admin' ? 'bg-white/5 text-neon-green' : 'text-zinc-300']}>
+        <a href="/admin" class:list={['whitespace-nowrap rounded-md px-3 py-2 font-semibold hover:bg-ink/5', current === '/admin' ? 'bg-ink/5 text-brand' : 'text-ink-soft']}>
           📊 Tableau de bord
         </a>
         {Object.entries(resources).map(([key, r]) => (
-          <a href={`/admin/${key}`} class:list={['whitespace-nowrap rounded-md px-3 py-2 font-semibold hover:bg-white/5', current.startsWith(`/admin/${key}`) ? 'bg-white/5 text-neon-green' : 'text-zinc-300']}>
+          <a href={`/admin/${key}`} class:list={['whitespace-nowrap rounded-md px-3 py-2 font-semibold hover:bg-ink/5', current.startsWith(`/admin/${key}`) ? 'bg-ink/5 text-brand' : 'text-ink-soft']}>
             {r.icon} {r.label}
           </a>
         ))}
       </nav>
-      <div class="hidden border-t border-white/5 p-6 md:absolute md:bottom-0 md:block md:w-full">
-        <p class="truncate text-sm text-zinc-400">{user.name}</p>
-        <button data-signout class="mt-2 text-sm font-bold uppercase tracking-wider text-neon-pink hover:underline">Se déconnecter</button>
+      <div class="hidden border-t border-ink/10 p-6 md:absolute md:bottom-0 md:block md:w-full">
+        <p class="truncate text-sm text-ink-soft">{user.name}</p>
+        <button data-signout class="mt-2 text-sm font-bold uppercase tracking-wider text-brand hover:underline">Se déconnecter</button>
       </div>
     </aside>
 
     <main class="min-w-0 flex-1 px-4 py-8 md:px-10 md:py-10">
       <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
-        <h1 class="font-display text-2xl font-extrabold text-white md:text-3xl">{title}</h1>
+        <h1 class="font-display text-2xl font-extrabold text-ink md:text-3xl">{title}</h1>
         <slot name="actions" />
       </div>
       <slot />
-      <button data-signout class="mt-12 text-sm font-bold uppercase tracking-wider text-neon-pink hover:underline md:hidden">Se déconnecter</button>
+      <button data-signout class="mt-12 text-sm font-bold uppercase tracking-wider text-brand hover:underline md:hidden">Se déconnecter</button>
     </main>
 
     <script>

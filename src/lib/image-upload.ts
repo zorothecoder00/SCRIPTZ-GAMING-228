@@ -40,7 +40,7 @@ export function initImageUploads() {
       if (!file) return;
 
       status.textContent = 'Envoi en cours…';
-      status.className = 'text-sm text-zinc-400';
+      status.className = 'text-sm text-ink-soft';
       if (submit) submit.disabled = true;
 
       try {
@@ -54,10 +54,10 @@ export function initImageUploads() {
         input.value = data.url;
         showPreview();
         status.textContent = 'Image envoyée ✔ — pense à enregistrer.';
-        status.className = 'text-sm text-neon-green';
+        status.className = 'text-sm font-semibold text-ink';
       } catch (e) {
         status.textContent = e instanceof Error ? e.message : "Échec de l'envoi.";
-        status.className = 'text-sm text-neon-pink';
+        status.className = 'text-sm text-brand';
       } finally {
         picker.value = '';
         if (submit) submit.disabled = false;

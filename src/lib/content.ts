@@ -89,13 +89,6 @@ export async function saveContactMessage(msg: { name: string; email: string; sub
 
 // --- Helpers d'affichage ---
 
-/** "TG" → 🇹🇬 */
-export function flag(country: string) {
-  const code = country.trim().toUpperCase();
-  if (!/^[A-Z]{2}$/.test(code)) return '';
-  return String.fromCodePoint(...[...code].map((c) => 0x1f1e6 + c.charCodeAt(0) - 65));
-}
-
 export function formatDate(date: Date | string) {
   return new Date(date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 }
