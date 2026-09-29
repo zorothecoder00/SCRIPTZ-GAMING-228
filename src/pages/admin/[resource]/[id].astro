@@ -30,6 +30,9 @@ if (Astro.request.method === 'POST' && !resource.readOnly) {
   row = parsed.values; // on réaffiche la saisie
 }
 
+// Champs image (photo_url, cover_url, logo_url) : bouton de téléversement vers Vercel Blob.
+const isImage = (f: { name: string }) => f.name.endsWith('_url');
+
 const title = resource.readOnly
   ? `${resource.icon} ${resource.singular[0].toUpperCase()}${resource.singular.slice(1)}`
   : isNew ? `Nouveau ${resource.singular}` : `Modifier le ${resource.singular}`;
@@ -57,18 +60,31 @@ const title = resource.readOnly
         </ul>
       )}
 
-      {resource.fields.map((f) =>
-        f.type === 'checkbox' ? (
+      {resource.fields.map((f) => {
+        const Field = isImage(f) ? 'div' : 'label';
+        return f.type === 'checkbox' ? (
           <label class="flex items-center gap-3">
             <input type="checkbox" name={f.name} checked={row ? Boolean(row[f.name]) : Boolean(f.default)} class="h-5 w-5 accent-neon-green" />
             <span class="font-semibold text-white">{f.label}</span>
           </label>
         ) : (
-          <label class="block">
+          <Field class="block">
             <span class="text-sm font-semibold uppercase tracking-wider text-zinc-400">
               {f.label}{f.required && <span class="text-neon-pink"> *</span>}
             </span>
-            {f.type === 'textarea' ? (
+            {isImage(f) ? (
+              <div data-image-upload data-folder={key}>
+                <div class="flex flex-col gap-2 sm:flex-row">
+                  <input name={f.name} type="url" value={inputValue(f, row)} placeholder="https://… ou téléverse une image" class="field sm:flex-1" />
+                  <label class="mt-2 inline-flex cursor-pointer items-center justify-center rounded-md border border-neon-green/60 px-4 py-2.5 text-sm font-bold uppercase tracking-wider whitespace-nowrap text-neon-green transition hover:bg-neon-green hover:text-night-950">
+                    Téléverser
+                    <input type="file" accept="image/*" class="sr-only" />
+                  </label>
+                </div>
+                <p data-status class="text-sm"></p>
+                <img data-preview hidden={!/^https?:\/\//i.test(inputValue(f, row))} src={inputValue(f, row) || undefined} alt="" class="mt-3 h-28 rounded-md border border-white/10 bg-night-900 object-contain" />
+              </div>
+            ) : f.type === 'textarea' ? (
               <textarea name={f.name} rows={f.name === 'content' ? 14 : 4} required={f.required} class="field">{inputValue(f, row)}</textarea>
             ) : (
               <input
@@ -82,12 +98,9 @@ const title = resource.readOnly
               />
             )}
             {f.help && <span class="mt-1 block text-sm text-zinc-500">{f.help}</span>}
-            {f.name.endsWith('_url') && /^https?:\/\//i.test(String(row?.[f.name] ?? '')) && (
-              <img src={String(row[f.name])} alt="" class="mt-3 h-24 rounded-md border border-white/10 object-cover" />
-            )}
-          </label>
-        ),
-      )}
+          </Field>
+        );
+      })}
 
       <div class="flex gap-4 pt-2">
         <button type="submit" class="btn-primary">Enregistrer</button>
@@ -96,3 +109,9 @@ const title = resource.readOnly
     </form>
   )}
 </AdminLayout>
+
+<script>
+  import { initImageUploads } from '../../../lib/image-upload';
+
+  initImageUploads();
+</script>

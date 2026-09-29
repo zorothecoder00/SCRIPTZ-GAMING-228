@@ -3,7 +3,9 @@ import { auth } from './lib/auth';
 
 // Seules ces pages ont besoin de connaître la session : le reste du site est public
 // et évite ainsi une requête à la base par visite.
-const needsSession = (path: string) => path === '/admin' || path.startsWith('/admin/') || path === '/connexion';
+const isAdminApi = (path: string) => path === '/api/upload';
+const needsSession = (path: string) =>
+  path === '/admin' || path.startsWith('/admin/') || path === '/connexion' || isAdminApi(path);
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const { pathname } = context.url;
@@ -19,6 +21,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   if (pathname === '/connexion') {
     return isAdmin ? context.redirect('/admin') : next();
+  }
+
+  if (isAdminApi(pathname)) {
+    return isAdmin ? next() : Response.json({ error: 'Accès réservé au staff.' }, { status: 401 });
   }
 
   // /admin/*

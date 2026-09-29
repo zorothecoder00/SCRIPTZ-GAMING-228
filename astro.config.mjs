@@ -21,6 +21,8 @@ export default defineConfig({
       DATABASE_URL: envField.string({ context: 'server', access: 'secret' }),
       BETTER_AUTH_SECRET: envField.string({ context: 'server', access: 'secret' }),
       BETTER_AUTH_URL: envField.string({ context: 'server', access: 'secret', optional: true }),
+      // Facultatif sur Vercel si le store Blob est connecté en OIDC ; requis en local.
+      BLOB_READ_WRITE_TOKEN: envField.string({ context: 'server', access: 'secret', optional: true }),
     }
   }
 });
