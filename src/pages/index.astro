@@ -1,0 +1,109 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Contenu d'exemple — à remplacer par tes vrais jeux / tournois (plus tard depuis Neon).
+const games = [
+  { name: 'EA FC', genre: 'Football', color: 'from-neon-green/30' },
+  { name: 'Call of Duty Mobile', genre: 'FPS', color: 'from-neon-pink/30' },
+  { name: 'Free Fire', genre: 'Battle Royale', color: 'from-neon-purple/30' },
+  { name: 'Tekken 8', genre: 'Combat', color: 'from-neon-green/30' },
+];
+
+const tournaments = [
+  { title: 'Coupe Scriptz — EA FC', date: 'Date à annoncer', format: '1v1 · Élimination directe', status: 'Inscriptions ouvertes' },
+  { title: 'Free Fire Squad Clash', date: 'Date à annoncer', format: 'Squads · Poules + finale', status: 'Bientôt' },
+  { title: 'CODM Night Battle', date: 'Date à annoncer', format: '5v5 · Search & Destroy', status: 'Bientôt' },
+];
+---
+
+<Layout>
+  <!-- HERO -->
+  <section class="bg-grid relative overflow-hidden">
+    <div class="pointer-events-none absolute -top-40 left-1/2 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-neon-purple/20 blur-3xl"></div>
+    <div class="relative mx-auto flex max-w-6xl flex-col items-center px-4 py-28 text-center md:py-40">
+      <span class="mb-6 rounded-full border border-neon-green/40 bg-neon-green/10 px-4 py-1 text-sm font-semibold uppercase tracking-widest text-neon-green">
+        Communauté gaming · Togo 🇹🇬
+      </span>
+      <h1 class="font-display text-4xl font-extrabold leading-tight text-white sm:text-6xl md:text-7xl">
+        SCRIPTZ <span class="text-gradient">GAMING</span> 228
+      </h1>
+      <p class="mt-6 max-w-2xl text-xl text-zinc-400">
+        Tournois, streams et esport. Rejoins la scène gaming togolaise et montre ce que tu vaux.
+      </p>
+      <div class="mt-10 flex flex-col gap-4 sm:flex-row">
+        <a href="#tournois" class="glow-green rounded-md bg-neon-green px-8 py-3 font-bold uppercase tracking-wider text-night-950 transition hover:brightness-110">
+          Voir les tournois
+        </a>
+        <a href="#communaute" class="rounded-md border border-white/15 px-8 py-3 font-bold uppercase tracking-wider text-white transition hover:border-neon-purple hover:text-neon-purple">
+          La communauté
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- JEUX -->
+  <section id="jeux" class="mx-auto max-w-6xl scroll-mt-20 px-4 py-24">
+    <h2 class="font-display text-3xl font-extrabold text-white md:text-4xl">
+      Nos <span class="text-neon-green">jeux</span>
+    </h2>
+    <p class="mt-3 text-zinc-400">Les titres sur lesquels on s'affronte.</p>
+    <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {games.map((g) => (
+        <article class={`group rounded-xl border border-white/5 bg-gradient-to-b ${g.color} to-night-800 p-6 transition hover:-translate-y-1 hover:border-neon-green/50`}>
+          <div class="mb-16 text-sm font-semibold uppercase tracking-widest text-zinc-400">{g.genre}</div>
+          <h3 class="font-display text-xl font-bold text-white group-hover:text-neon-green">{g.name}</h3>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- TOURNOIS -->
+  <section id="tournois" class="scroll-mt-20 border-y border-white/5 bg-night-900">
+    <div class="mx-auto max-w-6xl px-4 py-24">
+      <h2 class="font-display text-3xl font-extrabold text-white md:text-4xl">
+        Prochains <span class="text-neon-pink">tournois</span>
+      </h2>
+      <div class="mt-10 space-y-4">
+        {tournaments.map((t) => (
+          <article class="flex flex-col gap-4 rounded-xl border border-white/5 bg-night-800 p-6 transition hover:border-neon-pink/50 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h3 class="font-display text-lg font-bold text-white">{t.title}</h3>
+              <p class="mt-1 text-zinc-400">{t.format} · {t.date}</p>
+            </div>
+            <span class={`self-start rounded-full px-4 py-1 text-sm font-bold uppercase tracking-wider md:self-auto ${t.status === 'Inscriptions ouvertes' ? 'bg-neon-green/15 text-neon-green' : 'bg-white/5 text-zinc-400'}`}>
+              {t.status}
+            </span>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMUNAUTÉ -->
+  <section id="communaute" class="mx-auto max-w-6xl scroll-mt-20 px-4 py-24">
+    <div class="grid gap-6 md:grid-cols-3">
+      {[
+        { icon: '🏆', title: 'Compétitions', text: 'Des tournois réguliers pour tous les niveaux, du casual au compétitif.' },
+        { icon: '🎥', title: 'Streams', text: 'Suis les matchs en direct et les meilleures actions de la communauté.' },
+        { icon: '🤝', title: 'Communauté', text: 'Trouve des coéquipiers, échange des astuces et progresse ensemble.' },
+      ].map((f) => (
+        <div class="rounded-xl border border-white/5 bg-night-800 p-8">
+          <div class="text-4xl">{f.icon}</div>
+          <h3 class="mt-4 font-display text-xl font-bold text-white">{f.title}</h3>
+          <p class="mt-2 text-zinc-400">{f.text}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="rejoindre" class="scroll-mt-20 px-4 pb-24">
+    <div class="relative mx-auto max-w-6xl overflow-hidden rounded-2xl border border-neon-purple/30 bg-gradient-to-r from-neon-purple/20 via-night-800 to-neon-pink/20 px-6 py-16 text-center">
+      <h2 class="font-display text-3xl font-extrabold text-white md:text-4xl">Prêt à jouer ?</h2>
+      <p class="mx-auto mt-4 max-w-xl text-zinc-300">Rejoins Scriptz Gaming 228 et ne rate aucun tournoi.</p>
+      <a href="#" class="glow-green mt-8 inline-block rounded-md bg-neon-green px-8 py-3 font-bold uppercase tracking-wider text-night-950 transition hover:brightness-110">
+        Rejoindre la communauté
+      </a>
+    </div>
+  </section>
+</Layout>
